@@ -12,7 +12,7 @@
         <id>/2022/08/21/welcome</id>
         <link href="https://vinittomar.github.io/guide/2022/08/21/welcome"/>
         <updated>2022-08-21T06:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Hi 👋, this is the first post of my blog. Stay tuined for more awesome articles.]]></summary>
-        <content type="html"><![CDATA[<p>Hi 👋, this is the first post of my blog. Stay tuined for more awesome articles.</p>]]></content>
+        <summary type="html"><![CDATA[Hi 👋, welcome to my blog.]]></summary>
+        <content type="html"><![CDATA[<p>Hi 👋, welcome to my blog.</p><p>This is the place where you will find awesome articles related to software enginnering.</p>]]></content>
     </entry>
 </feed>

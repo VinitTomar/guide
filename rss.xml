@@ -13,8 +13,8 @@
             <link>https://vinittomar.github.io/guide/2022/08/21/welcome</link>
             <guid>/2022/08/21/welcome</guid>
             <pubDate>Sun, 21 Aug 2022 06:00:00 GMT</pubDate>
-            <description><![CDATA[Hi 👋, this is the first post of my blog. Stay tuined for more awesome articles.]]></description>
-            <content:encoded><![CDATA[<p>Hi 👋, this is the first post of my blog. Stay tuined for more awesome articles.</p>]]></content:encoded>
+            <description><![CDATA[Hi 👋, welcome to my blog.]]></description>
+            <content:encoded><![CDATA[<p>Hi 👋, welcome to my blog.</p><p>This is the place where you will find awesome articles related to software enginnering.</p>]]></content:encoded>
         </item>
     </channel>
 </rss>
