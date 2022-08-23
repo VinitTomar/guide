@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Guide Blog</title>
+        <link>https://vinittomar.github.io/guide/</link>
+        <description>Guide Blog</description>
+        <lastBuildDate>Sun, 21 Aug 2022 06:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Welcome]]></title>
+            <link>https://vinittomar.github.io/guide/2022/08/21/welcome</link>
+            <guid>/2022/08/21/welcome</guid>
+            <pubDate>Sun, 21 Aug 2022 06:00:00 GMT</pubDate>
+            <description><![CDATA[Hi 👋, this is the first post of my blog. Stay tuined for more awesome articles.]]></description>
+            <content:encoded><![CDATA[<p>Hi 👋, this is the first post of my blog. Stay tuined for more awesome articles.</p>]]></content:encoded>
+        </item>
+    </channel>
+</rss>
