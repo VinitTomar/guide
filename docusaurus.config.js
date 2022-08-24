@@ -8,7 +8,7 @@ const config = {
   title: 'Takshila',
   tagline: 'Software engineering is cool',
   url: 'https://vinittomar.github.io',
-  baseUrl: '/guide/',
+  baseUrl: '/takshila/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'favicon.png',
