@@ -1,27 +1,19 @@
 // @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Guide',
+  title: 'Takshila',
   tagline: 'Software engineering is cool',
   url: 'https://vinittomar.github.io',
   baseUrl: '/guide/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'favicon.png',
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Vinit Tomar', // Usually your GitHub org/user name.
-  projectName: 'guide', // Usually your repo name.
-
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
+  organizationName: 'Vinit Tomar',
+  projectName: 'takshila',
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -36,7 +28,8 @@ const config = {
         blog: {
           showReadingTime: true,
           routeBasePath: '/',
-          blogSidebarCount: 0
+          blogSidebarCount: 0,
+          blogTitle: ''
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
