@@ -1,0 +1,163 @@
+---
+title:  "Create"
+date:   2022-09-05 06:00:00 +0000
+displayed_sidebar: aws
+sidebar_position: 1
+---
+
+# Create Todo
+
+This data structure will have an `id` field for individually identifying each todo, a `name` field & a `description` field for storing name and detail, and a `status` field for tracking progress. Possible values of our status field are `todo`, `in-progress` & `done`. A `createdAt` field to store timestamp when a todo is created & `updatedAt` to store timestamp when a todo is updated.
+
+## Data structure
+
+Here is our Todo interface.
+```ts
+interface Todo {
+  id: string;
+  name: string;
+  description: string;
+  status: 'todo' | 'in-progress' | 'done';
+  createdAt: string;
+  updatedAt: string;
+}
+```
+While creating a todo we do not need all the information to be present. Therefore we also need to create one more type `CreateTodo` with the help of the typescript `utility types`.
+```ts
+type CreateTodo = Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>;
+```
+
+***
+
+## createTodo function
+
+To store our todos we are going to use `DynamoDB`. Let's define a function `createTodo`, for storing todos in dynamodb and a utility function timeStamp.
+```ts showLineNumbers
+import dynamodb, { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { randomUUID } from 'crypto';
+
+const timeStamp = () => {
+  return Date().split(' (')[0];
+}
+
+const createTodo = async (todo: CreateTodo): Promise<Todo> => {
+  const docClient = new dynamodb.DocumentClient();
+  const tableName = process.env.TODO_TABLE;
+  const id = randomUUID();
+  const item: Todo = {
+    id,
+    ...todo,
+    createdAt: timeStamp(),
+    updatedAt: timeStamp(),
+  }
+  const params: DocumentClient.PutItemInput = {
+    TableName: tableName,
+    Item: item
+  }
+  await docClient.put(params).promise();
+  return item;
+}
+```
+
+`createTodo` function is very straightforward. We are creating the DyanmoDb document client on `line 9`, then we are calling the put method of the client on `line 22`. The parameter for put method named params has TableName & Item property defined on `line 18`.
+
+`createTodo` function expecting only `name, description & status` to be passed by the user and generates `id, createdAt & updatedAt` on its own.
+
+:::note tip
+By default envs are of type `string | undefined`. Therefore you might get type error. To resovlve this add below code to file `global.d.ts`.
+```ts
+declare const process: {
+  env: Envs;
+}
+```
+:::
+
+***
+
+## Api Gateway handler
+
+To get user data we need to add a handler that can receive `APIGatewayProxyEvent` and extract user data from it. for this purpose, let's add `createTodoHandler` and a utility function `jsonResponse` to our code.
+
+```ts
+const jsonResponse = (status: number, body: unknown): APIGatewayProxyResult => {
+  return {
+    statusCode: status,
+    body: JSON.stringify(body),
+  };
+}
+```
+
+The `jsonResponse` function is just returning an object with `statuCode` and `body`, which contains the response in string form which we want to send to the user. The return type of jsonResponse is a promise of `APIGatewayProxyResult` type.
+Return type of jsonResponse is of `APIGatewayProxyResult` type.
+```ts showLineNumbers
+export const createTodoHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log("createTodoHandler", event);
+  let response: APIGatewayProxyResult;
+  try {
+    const todo: CreateTodo = JSON.parse(event.body || '{}');
+    const newTodo = await createTodo(todo);
+    response = jsonResponse(201, newTodo);
+  } catch (err) {
+    console.log(err);
+    response = {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'some error happened',
+      }),
+    };
+  }
+  return response;
+};
+```
+In `createTodoHandler` handler we are parsing `event.body` and assigning it to const `todo`, then passing it to `createTodo` function at lines `5` & `6` respectively. Function `createTodo` return newly create `todo` which contains `id`, `createdAt` & `updatedAt`. After that handler functions return a jsonResponse to the API gateway.
+
+:::info Tip
+Complete code for creating todo can be found [here](https://github.com/VinitTomar/todo-aws-sam/blob/create-todo/src/app.ts).
+:::
+
+***
+
+## Template.yaml
+
+Now we have to configure our `createTodoHandler` so that it can receive API gateway events. Add below code to `template.yaml` under `Resources` section.
+```yaml
+CreateTodoFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: dist/
+    Handler: app.createTodoHandler 
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TodoTable
+    Environment:
+      Variables:
+        TODO_TABLE: !Ref TodoTable
+    Events:
+      Api:
+        Type: Api
+        Properties:
+          Path: /todos
+          Method: POST
+```
+As you can see we have assigned our `createTodoHanlder` to the `Handler` property of our `CreateTodoFunction` function. We have also added `DynamoDBCrudPolicy`, which enables our lambda function to perform CRUD operation on DynamoDB table `TodoTable`. We have also added the environment variable `TODO_TABLE` which contains the name of our `TodoTable`. And we have also added an API event with properties path set to `/todos` and method set to `POST`.
+
+Now one last thing is remaining to configure a DynamoDB table. Add the below code to the`template.yaml` file.
+```yaml
+TodoTable:
+  Type: AWS::Serverless::SimpleTable
+  Properties:
+    PrimaryKey:
+      Name: id
+      Type: String
+    ProvisionedThroughput:
+      ReadCapacityUnits: 2
+      WriteCapacityUnits: 2
+```
+
+In this table, we only need to add the `PrimaryKey` property. DyanmoDb is a document-based database, the remaining fields will be created automatically when we put new data in our table.
+
+***
+
+## Test
+
+Run command `build` and then `deploy`. You will see lambda function and DynamoDB table resources are being created automatically. After the deployment is successfully completed you can hit the `todo` endpoint using postman to create a new Todo. If you get a successful response, then you can verify the same details in the DyanmoDB table.

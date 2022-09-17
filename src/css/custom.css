@@ -28,3 +28,45 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+img[alt="folder-structure"] {
+  width: 350px;
+}
+
+img[alt="sample sam app"] {
+  background: white;
+  padding: 10px;
+  display: block;
+  margin: auto;
+}
+
+div.language-yaml span.token.plain,
+div.language-yaml span.token.plain+span.token.punctuation,
+div.language-yaml span.token.punctuation+span.token.punctuation {
+  color: rgb(255, 121, 198) !important;
+}
+
+hr {
+  margin-top: 52px;
+  margin-bottom: 42px;
+  height: 0;
+  display: block;
+  border: 0;
+  text-align: center;
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+hr::before {
+  content: '...';
+  display: inline-block;
+  margin-left: 0.6em;
+  position: relative;
+  top: -43px;
+  font-size: xx-large;
+  letter-spacing: 18px;
+}
+
+.token-line>span:first-child::before {
+  white-space: nowrap;
+}
