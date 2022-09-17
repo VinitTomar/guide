@@ -5,15 +5,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Takshila',
+  title: 'Tutorial',
   tagline: 'Software engineering is cool',
   url: 'https://vinittomar.github.io',
-  baseUrl: '/takshila/',
+  baseUrl: '/tutorial/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'favicon.png',
   organizationName: 'Vinit Tomar',
-  projectName: 'takshila',
+  projectName: 'Tutorial',
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -24,13 +24,11 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: false,
-        blog: {
-          showReadingTime: true,
+        docs: {
           routeBasePath: '/',
-          blogSidebarCount: 0,
-          blogTitle: ''
+          sidebarPath: require.resolve('./sidebars.js'),
         },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -42,7 +40,11 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Guide',
+        title: 'Home',
+        items: [
+          { to: '/aws-sam/introduction/', label: 'AWS SAM', position: 'left' },
+        ],
+        hideOnScroll: true
       },
       prism: {
         theme: lightCodeTheme,
