@@ -1,0 +1,148 @@
+---
+title:  "Read"
+date:   2022-09-05 06:00:00 +0000
+displayed_sidebar: aws
+sidebar_position: 2
+---
+# Fetch todos
+## Get all
+To get all todos we have created, we can use the `scan` method of the DyanmoDB client. Let's add a function `getAllTodos` to get all todos inside an array.
+```ts showLineNumbers
+const docClient = new dynamodb.DocumentClient();
+const tableName = process.env.TODO_TABLE;
+
+const getAllTodos = async (): Promise<Todo[]> => {
+  const params: DocumentClient.ScanInput = {
+    TableName: tableName,
+  }
+
+  const data = await docClient.scan(params).promise();
+  const list: Todo[] = <[]>data.Items;
+  return list;
+}
+```
+**Scan** method requires only the `TableName` parameter to get all the records from our table. Then we can extract our todos from `data.Items` and return the result.
+
+Now add an API Gateway event handler for our `getAllTodos` function.
+```ts showLineNumbers
+export const getTodoListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log("getTodoListHandler", event);
+  let response: APIGatewayProxyResult;
+  try {
+    const allTodo = await getAllTodos();
+    console.log("getTodoListHandler", { allTodo });
+    response = jsonResponse(200, allTodo);
+  } catch (err) {
+    console.log(err);
+    response = {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'some error happened',
+      }),
+    };
+  }
+  return response;
+};
+```
+Our handler code is pretty self explanatory. We are calling `getAllTodos()` method and return todos list as `jsonResponse`.
+
+Let's configure our API gateway handler in `template.yaml`. Add `GetTodosFunction` under **Resources** section.
+```yaml showLineNumbers
+GetTodosFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: dist/
+    Handler: app.getTodoListHandler
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TodoTable
+    Environment:
+      Variables:
+        TODO_TABLE: !Ref TodoTable
+    Events:
+      GetTodos:
+        Type: Api
+        Properties:
+          Path: /todos
+          Method: get
+```
+
+We are assigning `getTodoListHandler` to the handler property. And we have also added an API event with properties path set to `/todos` and method set to `get`. Policies and environment Variables are the same as **CreateTodoFunction** function.
+
+:::info Tip
+* All **Handlers functions** should be exported. 
+* Complete code for listing todo can be found [here](https://github.com/VinitTomar/todo-aws-sam/tree/create-todo).
+:::
+
+***
+
+## Get by id
+
+Now we are able to fetch a list of all our todos. What about fetching a single todo? We are having **"id"** property for individually identifying each todo therefore we can use it to fetch a single todo. Let's add a `getTodoById` function to get a todo by its id.
+```ts showLineNumbers
+const docClient = new dynamodb.DocumentClient();
+const tableName = process.env.TODO_TABLE;
+
+const getTodoById = async (id: string): Promise<Todo> => {
+  const params: DocumentClient.GetItemInput = {
+    TableName: tableName,
+    Key: {
+      id
+    }
+  };
+  const data = await docClient.get(params).promise();
+  const todo: Todo = <any>data.Item;
+  return todo;
+}
+```
+
+To get a single todo we are using `get` method of `docClient` object. Parameters for the `get` method are `TableName` and an object assigned to `Key` which has todo's **"id"**. Now add the API gateway handler for `getTodoById` function.
+```ts showLineNumbers
+export const getTodoByIdHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log("getTodoByIdHandler", event);
+  let response: APIGatewayProxyResult;
+  try {
+    const todo = await getTodoById(event.pathParameters?.id || '');
+    response = jsonResponse(200, todo);
+  } catch (err) {
+    console.log(err);
+    response = {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'some error happened',
+      }),
+    };
+  }
+  return response;
+}
+```
+
+Our handle is extracting todo's **id** from `event.pathParametets` and passing it to `getTodoById` function. `getTodoById` function is returning a todo corresponding to the **id** from `event.pathParameters`. Then we are sending this todo to the client as **jsonResponse**.
+
+Lets add a serverless function to our **template.yaml** for handling API gateway event for `getTodoByIdHandler`.
+```yaml showLineNumbers
+GetTodoByIdFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: dist/
+    Handler: app.getTodoByIdHandler
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TodoTable
+    Environment:
+      Variables:
+        TODO_TABLE: !Ref TodoTable
+    Events:
+      GetTodoById:
+        Type: Api
+        Properties:
+          Path: /todos/{id}
+          Method: get
+```
+Look at the **Path** property of the API gateway event on `line 16`. This is where we are adding our path parameter.
+
+***
+
+## Test
+
+Build and deploy your application. You will see our lambda functions are being created. After the deployment is completed, hit `todos` endpoint by postman with `GET http method` and you will receive an array of todos you have created. Copy **id** of any todo from this list and hit `todos/<copied_todo_id>` to get a single todo detail.

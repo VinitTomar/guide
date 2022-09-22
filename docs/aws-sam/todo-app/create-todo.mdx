@@ -6,10 +6,8 @@ sidebar_position: 1
 ---
 
 # Create Todo
-
-This data structure will have an `id` field for individually identifying each todo, a `name` field & a `description` field for storing name and detail, and a `status` field for tracking progress. Possible values of our status field are `todo`, `in-progress` & `done`. A `createdAt` field to store timestamp when a todo is created & `updatedAt` to store timestamp when a todo is updated.
-
 ## Data structure
+This data structure will have an `id` field for individually identifying each todo, a `name` field & a `description` field for storing name and detail, and a `status` field for tracking progress. Possible values of our status field are `todo`, `in-progress` & `done`. A `createdAt` field to store timestamp when a todo is created & `updatedAt` to store timestamp when a todo is updated.
 
 Here is our Todo interface.
 ```ts
@@ -29,7 +27,7 @@ type CreateTodo = Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>;
 
 ***
 
-## createTodo function
+## Create Todo function
 
 To store our todos we are going to use `DynamoDB`. Let's define a function `createTodo`, for storing todos in dynamodb and a utility function timeStamp.
 ```ts showLineNumbers
@@ -112,7 +110,8 @@ export const createTodoHandler = async (event: APIGatewayProxyEvent): Promise<AP
 In `createTodoHandler` handler we are parsing `event.body` and assigning it to const `todo`, then passing it to `createTodo` function at lines `5` & `6` respectively. Function `createTodo` return newly create `todo` which contains `id`, `createdAt` & `updatedAt`. After that handler functions return a jsonResponse to the API gateway.
 
 :::info Tip
-Complete code for creating todo can be found [here](https://github.com/VinitTomar/todo-aws-sam/blob/create-todo/src/app.ts).
+* All **Handlers functions** in this tutorial, should be exported. 
+* Complete code for creating todo can be found [here](https://github.com/VinitTomar/todo-aws-sam/blob/create-todo/src/app.ts).
 :::
 
 ***
@@ -160,4 +159,4 @@ In this table, we only need to add the `PrimaryKey` property. DyanmoDb is a docu
 
 ## Test
 
-Run command `build` and then `deploy`. You will see lambda function and DynamoDB table resources are being created automatically. After the deployment is successfully completed you can hit the `todo` endpoint using postman to create a new Todo. If you get a successful response, then you can verify the same details in the DyanmoDB table.
+Run command `build` and then `deploy`. You will see lambda function and DynamoDB table resources are being created automatically. After the deployment is successfully completed you can hit the `todo` endpoint using postman with `POST http method` to create a new Todo. If you get a successful response, then you can verify the same details in the DyanmoDB table.
