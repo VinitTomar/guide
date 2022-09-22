@@ -5,15 +5,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Tutorial',
+  title: 'Tutorials',
   tagline: 'Software engineering is cool',
   url: 'https://vinittomar.github.io',
-  baseUrl: '/tutorial/',
+  baseUrl: '/tutorials/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'favicon.png',
   organizationName: 'Vinit Tomar',
-  projectName: 'Tutorial',
+  projectName: 'Tutorials',
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
