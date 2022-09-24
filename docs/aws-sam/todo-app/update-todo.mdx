@@ -5,4 +5,170 @@ displayed_sidebar: aws
 sidebar_position: 4
 ---
 
-Update todo steps
+There are two ways in which we can update our todos. Either we can update all properties simultaneously or we can update some of the fields. By REST convention for updating all properties, we use the `PUT` HTTP method and for the partial update, we use the `PATCH` HTTP method.
+
+## PUT
+Let's add a function for updating all the fields of our todo.
+```ts showLineNumbers
+type UpdateTodo = Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>;
+
+const putTodo = async (id: string, todo: UpdateTodo): Promise<Todo> => {
+  const item: Todo = {
+    id,
+    ...todo,
+    createdAt: timeStamp(),
+    updatedAt: timeStamp(),
+  }
+  const params: DocumentClient.PutItemInput = {
+    TableName: tableName,
+    Item: item
+  }
+  await docClient.put(params).promise();
+  return item;
+}
+```
+
+If we compare our `putTodo` function with `createTodo` function, the only difference is here we are passing **id** as the argument and in `createTodo` we are generating **id** for our todo. We are using the same `docClient.put` method, on **line 14**, to update our todo as well.
+
+### Api gateway handler
+Add an api gateway event handler `updateTodoHandler` for out `putTodo` fucntion.
+
+```ts showLineNumbers
+export const updateTodoHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log("createTodoHandler", event);
+  let response: APIGatewayProxyResult;
+  try {
+    const todo: UpdateTodo = JSON.parse(event.body || '{}');
+    const updatedTodo = await putTodo(event.pathParameters?.id || '', todo);
+    response = jsonResponse(200, updatedTodo);
+  } catch (err) {
+    console.log(err);
+    response = {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'some error happened',
+      }),
+    };
+  }
+  return response;
+};
+```
+Here we are parsing `event.body` for extracting user data on **line 5** and **id** for the todo we want to update is being extracted from `event.pathParameters` on **line 6**. On the same line, we are calling our `putTodo` function. Next we are updated Todo as **jsonResposne**.
+
+### Sam template configuration
+Add below code under **Resources** section of `template.yaml` file.
+```yaml showLineNumbers
+UpdateTodoByIdFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: dist/
+    Handler: app.updateTodoHandler
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TodoTable
+    Environment:
+      Variables:
+        TODO_TABLE: !Ref TodoTable
+    Events:
+      UpdateTodo:
+        Type: Api
+        Properties:
+          Path: /todos/{id}
+          Method: PUT
+```
+As we can see from **line 12** to **line 17**, we have added an API event with the HTTP **PUT** method and todo's **id** as path parameters.
+
+***
+
+## PATCH
+Partially updating todo with **DynamoDB** is not easy. We use `docClient.update(params)` method to partially update our todos.
+Lets add a `patchTodo` function.
+```ts showLineNumbers
+type CreateTodo = Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>;
+type PatchTodo = Partial<CreateTodo>;
+
+const patchTodo = async (id: string, todo: PatchTodo) => {
+  let UpdateExpression = 'set ';
+  let ExpressionAttributeNames: any = {};
+  let ExpressionAttributeValues: any = {};
+
+  for (const key in todo) {
+    if (key !== 'name' && key !== 'description' && key !== 'status')
+      continue;
+
+    UpdateExpression += `#${key} = :${key}, `;
+    ExpressionAttributeNames[`#${key}`] = key;
+    ExpressionAttributeValues[`:${key}`] = todo[key];
+  }
+
+  UpdateExpression += `updatedAt = :updatedAt`;
+  ExpressionAttributeValues[':updatedAt'] = timeStamp();
+  console.log({ UpdateExpression, ExpressionAttributeNames, ExpressionAttributeValues })
+  const params: DocumentClient.UpdateItemInput = {
+    TableName: tableName,
+    Key: { id },
+    UpdateExpression,
+    ExpressionAttributeNames,
+    ExpressionAttributeValues
+  }
+  return await docClient.update(params).promise();
+}
+```
+
+Parameters for `docClient.update` are **TableName, Key, UpdateExpression, ExpressionAttributeNames & ExpressionAttributeValues**. TableName & Key are the same as other examples. However, UpdateExpression, ExpressionAttributeNames & ExpressionAttributeValues are new for patch todo example. UpdateExpression is the one that is used to update our todo. Then based on UpdateExpression, ExpressionAttributeNames & ExpressionAttributeValues are used to set an attribute's value based on its name. Here we are setting these three parameters dynamically from **line 9 to line 19**.
+
+:::info Tip
+More about **Update an Item** in dynamodb can be found [here](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateItem.html#API_UpdateItem_Examples).
+:::
+
+### Api gateway handler
+Now add an API gateway event handler `patchTodoHandler` for our `patchTodo` function.
+```ts showLineNumbers
+export const patchTodoHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log("patchTodoHandler", event);
+  let response: APIGatewayProxyResult;
+  try {
+    const todo: PatchTodo = JSON.parse(event.body || '{}');
+    const updateResult = await patchTodo(event.pathParameters?.id || '', todo);
+    response = jsonResponse(200, updateResult);
+  } catch (err) {
+    console.log(err);
+    response = {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'some error happened',
+      }),
+    };
+  }
+  return response;
+};
+```
+This handler is almost similar in functionality except we are calling `patchTodo` function on **line 6**.
+
+### Sam template configuration
+Add below lines of code in `templat.yaml` file under **Resources** section.
+```yaml showLineNumbers
+PatchTodoByIdFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: dist/
+    Handler: app.patchTodoHandler
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TodoTable
+    Environment:
+      Variables:
+        TODO_TABLE: !Ref TodoTable
+    Events:
+      UpdateTodo:
+        Type: Api
+        Properties:
+          Path: /todos/{id}
+          Method: PATCH
+```
+Here we are adding an api event with `PATCH` http method.
+
+***
+
+## Test
+Build and deploy your application. You will see our lambda functions are being created. After the deployment is completed, you can update any todos either completely or partially and check if the application is working as expected or not.
