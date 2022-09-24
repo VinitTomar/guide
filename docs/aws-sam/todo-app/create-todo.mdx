@@ -57,11 +57,11 @@ const createTodo = async (todo: CreateTodo): Promise<Todo> => {
 }
 ```
 
-`createTodo` function is very straightforward. We are creating the DyanmoDb document client on `line 9`, then we are calling the put method of the client on `line 22`. The parameter for put method named params has TableName & Item property defined on `line 18`.
+`createTodo` function is very straightforward. We are creating the DynamoDB document client on `line 9`, then we are calling the put method of the client on `line 22`. The parameter for put method named params has TableName & Item property defined on `line 18`.
 
 `createTodo` function expecting only `name, description & status` to be passed by the user and generates `id, createdAt & updatedAt` on its own.
 
-:::note tip
+:::info tip
 By default envs are of type `string | undefined`. Therefore you might get type error. To resovlve this add below code to file `global.d.ts`.
 ```ts
 declare const process: {
@@ -153,10 +153,10 @@ TodoTable:
       WriteCapacityUnits: 2
 ```
 
-In this table, we only need to add the `PrimaryKey` property. DyanmoDb is a document-based database, the remaining fields will be created automatically when we put new data in our table.
+In this table, we only need to add the `PrimaryKey` property. DynamoDB is a document-based database, the remaining fields will be created automatically when we put new data in our table.
 
 ***
 
 ## Test
 
-Run command `build` and then `deploy`. You will see lambda function and DynamoDB table resources are being created automatically. After the deployment is successfully completed you can hit the `todo` endpoint using postman with `POST http method` to create a new Todo. If you get a successful response, then you can verify the same details in the DyanmoDB table.
+Run command `build` and then `deploy`. You will see lambda function and DynamoDB table resources are being created automatically. After the deployment is successfully completed you can hit the `todo` endpoint using postman with `POST http method` to create a new Todo. If you get a successful response, then you can verify the same details in the DynamoDB table.
