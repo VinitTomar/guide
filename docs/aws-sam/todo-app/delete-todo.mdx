@@ -4,5 +4,71 @@ date:   2022-09-05 06:00:00 +0000
 displayed_sidebar: aws
 sidebar_position: 6
 ---
+# Delete toodos
+Delete a todo is very simple. We just have to pass the **TableName** and **Key** as the parameters to the `docClient.delete(params)` method. Let's add a `deleteTodo` function.
+```ts showLineNumbers
+const deleteTodo = async (id: string) => {
+  const params: DocumentClient.DeleteItemInput = {
+    TableName: tableName,
+    Key: { id }
+  }
 
-Delete todo steps
+  return docClient.delete(params).promise();
+}
+```
+
+## Api gateway handler
+Now add an API gateway handler `deleteTodoHandler` for our `deleteTodo` function.
+```ts showLineNumbers
+export const deleteTodoHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log("patchTodoHandler", event);
+  let response: APIGatewayProxyResult;
+  try {
+    const deleteResult = await deleteTodo(event.pathParameters?.id || '');
+    response = jsonResponse(200, deleteResult);
+  } catch (err) {
+    console.log(err);
+    response = {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'some error happened',
+      }),
+    };
+  }
+  return response;
+};
+```
+
+We are extraction the **id** of todo from `event.pathParameters?.id` and passing it to `deleteTodo` function for deleting our todo.
+
+## Sam template configuration
+Add below lines of code in `templat.yaml`` file under **Resources** section.
+
+```yaml showLineNumbers
+DeleteTodoByIdFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    CodeUri: dist/
+    Handler: app.deleteTodoHandler
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TodoTable
+    Environment:
+      Variables:
+        TODO_TABLE: !Ref TodoTable
+    Events:
+      UpdateTodo:
+        Type: Api
+        Properties:
+          Path: /todos/{id}
+          Method: DELETE
+```
+
+Here we are adding an api event with **DELETE** http method to our function resource.
+
+## Test
+Build and deploy your application. You will see our lambda functions are being created. After the deployment is completed, you can delete any todos by calling the HTTP **DELETE** method and passing **id** as the path parameter and check if the application is working as expected or not.
+
+:::info Tip
+A complete implementation of this todo app can be found [here](https://github.com/VinitTomar/todo-aws-sam). This repository code is restructured and some things might be different from our tutorial.
+:::

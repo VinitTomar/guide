@@ -4,7 +4,7 @@ date:   2022-09-05 06:00:00 +0000
 displayed_sidebar: aws
 sidebar_position: 4
 ---
-
+# Update todos
 There are two ways in which we can update our todos. Either we can update all properties simultaneously or we can update some of the fields. By REST convention for updating all properties, we use the `PUT` HTTP method and for the partial update, we use the `PATCH` HTTP method.
 
 ## PUT
@@ -166,9 +166,9 @@ PatchTodoByIdFunction:
           Path: /todos/{id}
           Method: PATCH
 ```
-Here we are adding an api event with `PATCH` http method.
+Here we are adding an api event with `PATCH` http method to our function resource.
 
 ***
 
 ## Test
-Build and deploy your application. You will see our lambda functions are being created. After the deployment is completed, you can update any todos either completely or partially and check if the application is working as expected or not.
+Build and deploy your application. You will see our lambda functions are being created. After the deployment is completed, you can update any todos, either completely or partially, by calling the HTTP **PATCH** method and passing **id** as the path parameter & updated fields inside **body** and check if the application is working as expected or not.
