@@ -6,7 +6,7 @@ sidebar_position: 2
 ---
 # Fetch todos
 ## Get all
-To get all todos we have created, we can use the `scan` method of the DyanmoDB client. Let's add a function `getAllTodos` to get all todos inside an array.
+To get all todos we have created, we can use the `scan` method of the DynamoDB client. Let's add a function `getAllTodos` to get all todos inside an array.
 ```ts showLineNumbers
 const docClient = new dynamodb.DocumentClient();
 const tableName = process.env.TODO_TABLE;
@@ -23,6 +23,7 @@ const getAllTodos = async (): Promise<Todo[]> => {
 ```
 **Scan** method requires only the `TableName` parameter to get all the records from our table. Then we can extract our todos from `data.Items` and return the result.
 
+### Api gateway handler
 Now add an API Gateway event handler for our `getAllTodos` function.
 ```ts showLineNumbers
 export const getTodoListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -46,6 +47,7 @@ export const getTodoListHandler = async (event: APIGatewayProxyEvent): Promise<A
 ```
 Our handler code is pretty self explanatory. We are calling `getAllTodos()` method and return todos list as `jsonResponse`.
 
+### Sam template configuration
 Let's configure our API gateway handler in `template.yaml`. Add `GetTodosFunction` under **Resources** section.
 ```yaml showLineNumbers
 GetTodosFunction:
@@ -96,7 +98,10 @@ const getTodoById = async (id: string): Promise<Todo> => {
 }
 ```
 
-To get a single todo we are using `get` method of `docClient` object. Parameters for the `get` method are `TableName` and an object assigned to `Key` which has todo's **"id"**. Now add the API gateway handler for `getTodoById` function.
+To get a single todo we are using `get` method of `docClient` object. Parameters for the `get` method are `TableName` and an object assigned to `Key` which has todo's **"id"**. 
+
+### Api gateway handler
+Now add the API gateway handler for `getTodoById` function.
 ```ts showLineNumbers
 export const getTodoByIdHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log("getTodoByIdHandler", event);
@@ -119,6 +124,7 @@ export const getTodoByIdHandler = async (event: APIGatewayProxyEvent): Promise<A
 
 Our handle is extracting todo's **id** from `event.pathParametets` and passing it to `getTodoById` function. `getTodoById` function is returning a todo corresponding to the **id** from `event.pathParameters`. Then we are sending this todo to the client as **jsonResponse**.
 
+### Sam template configuration
 Lets add a serverless function to our **template.yaml** for handling API gateway event for `getTodoByIdHandler`.
 ```yaml showLineNumbers
 GetTodoByIdFunction:
