@@ -27,6 +27,10 @@ const config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
+          async sidebarItemsGenerator({ defaultSidebarItemsGenerator, ...args }) {
+            const filteredDocs = args.docs.filter(d => d.frontMatter.hide != true);
+            return await defaultSidebarItemsGenerator({ ...args, docs: filteredDocs });
+          },
         },
         blog: false,
         theme: {

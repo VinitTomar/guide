@@ -2,7 +2,6 @@
 title:  "Introduction"
 date:   2022-09-05 06:00:00 +0000
 displayed_sidebar: aws
-sidebar_position: 1
 ---
 
 SAM is serverless application model for AWS for running serverless applications. With the help of SAM, we can create serverless applications declaratively. SAM uses a file commonly named as template.yaml to get the information about the AWS services required for our serverless application. File template.yaml has different sections for different purpose but the most important is the Resources section. This is the place where we declare all AWS services required for our application.
