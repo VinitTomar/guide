@@ -46,7 +46,8 @@ const config = {
       navbar: {
         title: 'Home',
         items: [
-          { to: '/aws-sam/introduction/', label: 'AWS SAM', position: 'left' },
+          { to: '/aws-sam/', label: 'AWS SAM', position: 'left' },
+          { to: '/dynamo-db/', label: 'DynamoDB', position: 'left' },
         ],
         hideOnScroll: true
       },
