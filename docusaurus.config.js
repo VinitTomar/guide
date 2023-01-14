@@ -19,6 +19,8 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: ['docusaurus-plugin-sass'],
+
   presets: [
     [
       'classic',
@@ -34,7 +36,7 @@ const config = {
         },
         blog: false,
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom.scss'),
         },
       }),
     ],
@@ -49,7 +51,6 @@ const config = {
           { to: '/aws-sam/', label: 'AWS SAM', position: 'left' },
           { to: '/dynamo-db/', label: 'DynamoDB', position: 'left' },
         ],
-        hideOnScroll: true
       },
       prism: {
         theme: lightCodeTheme,

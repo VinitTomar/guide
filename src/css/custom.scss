@@ -5,6 +5,19 @@
  */
 
 /* You can override the default Infima variables here. */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+  font-family: Roboto,
+    Helvetica Neue Light,
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    Lucida Grande,
+    sans-serif;
+}
+
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
@@ -15,10 +28,15 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --ifm-navbar-background-color: #d21982;
+  --ifm-navbar-link-color: #fff;
+  --ifm-font-weight-semibold: 16px;
+  --ifm-navbar-link-hover-color: white;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
+html[data-theme='dark'] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
   --ifm-color-primary-darker: #1fa588;
@@ -27,6 +45,9 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --ifm-navbar-background-color: #a10d49;
+  --ifm-background-color: #303030;
 }
 
 img[alt="folder-structure"] {
@@ -69,4 +90,41 @@ hr::before {
 
 .token-line>span:first-child::before {
   white-space: nowrap;
+}
+
+.navbar__link {
+  line-height: 33px;
+  font-weight: 400;
+  position: relative;
+
+  @mixin hoverAndActiveStyles {
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    content: " ";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 2px;
+    bottom: 2px;
+  }
+
+  &--active::after {
+    @include hoverAndActiveStyles();
+  }
+
+  &:hover::after {
+    @include hoverAndActiveStyles();
+  }
+}
+
+.navbar {
+  button.clean-btn {
+    :hover {
+      background-color: transparent !important;
+    }
+
+    svg {
+      color: white;
+    }
+  }
 }
