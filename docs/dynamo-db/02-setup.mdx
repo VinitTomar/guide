@@ -7,17 +7,19 @@ displayed_sidebar: dynamodb
 import AWSConfigure from '../partials/_aws-configure.md';
 
 
-There are two ways we can access DynamoDB. Either you can use as amazon web service or you can setup in you local system. For both ways you should provide configure AWS credentials first. In case of local system setup, there is no need for credentials to be correct, you can use and random values. However for web services credentials should be correct.
+There are two ways we can access DynamoDB. Either you can use it as an amazon web service or you can setup in your local system. For both ways, you should provide configure AWS credentials first. In the case of local system setup, there is no need for credentials to be real, you can use any **fake** credentails. However, for web services credentials should be real.
 
-If you want to save some money I would suggest to setup dynamodb [locally](#local-setup).
+If you want to save some money I would suggest continuing with [locally](#local-setup) setup DynamoDB.
 
 ## As a web service
 
-If you have AWS cli installed you can run below command to configure you credentials. You need to enter `Access key ID` & `Secret access key` which you can get from aws IAM console.
+If you have AWS CLI installed you can run the below command to configure your credentials. You need to enter `Access key ID` & `Secret access key` which you can get from the AWS IAM console.
 
 <AWSConfigure />
 
-To check if you are able to create a table run below command and wait for few seconds.
+### DynamoDB service
+
+To check if you are able to create a table run the below command and wait for a few seconds.
 
 ```bash
 aws dynamodb create-table \
@@ -30,13 +32,13 @@ aws dynamodb create-table \
         ReadCapacityUnits=10,WriteCapacityUnits=5
 ```
 
-Go to DynamoDB service in your aws console. Check if the table is available or not. Or you can run below command to check if table is available.
+Go to the DynamoDB service in your AWS console. Check if the table is available or not. Or you can run the below command to check if the table is available.
 
 ```bash
 aws dynamodb wait table-exists --table-name DummyTable
 ```
 
-Now you are ready to use AWS dynamodb service.
+Now you are ready to use AWS DynamoDB service.
 
 ***
 
@@ -44,9 +46,7 @@ Now you are ready to use AWS dynamodb service.
 
 ### JRE
 
-To run dynamodb locally JRE(Java runtime environment) 8.x is required. If you are using Linux or Mac then most probablly java is already available on you system.
-
-You can check if JRE is available by running:
+To run DynamoDB locally JRE(Java runtime environment) 8.x is required. If you are using Linux or Mac then most probably java is already available on your system. You can check if JRE is available by running:
 
 ```bash
 java -version
@@ -60,20 +60,19 @@ OpenJDK Runtime Environment (build 11.0.11+9-Ubuntu-0ubuntu2)
 OpenJDK 64-Bit Server VM (build 11.0.11+9-Ubuntu-0ubuntu2, mixed mode)
 ```
 
-If java is not installed, you can download it from here https://www.java.com/en/download/.
+If java is not installed, you can download and install it from here https://www.java.com/en/download/.
 
 ### DynamoDB
-
-1. Download dynamodb https://s3.ap-south-1.amazonaws.com/dynamodb-local-mumbai/dynamodb_local_latest.zip.
-2. Extract content from zip file. Content for the zip should look like this.
+1. Download DynamoDB https://s3.ap-south-1.amazonaws.com/dynamodb-local-mumbai/dynamodb_local_latest.zip.
+2. Extract content from the zip file. The content for the zip should look like this.
 >![dynamodb-zip-content](../imgs/local-dynamo-db.png)
-3. Go inside the directory where you have extracted dynamodb zip file.
-5. Run this command to start dynamodb instance.
+3. Go inside the directory where you have extracted the DynamoDB zip file.
+4. Run this command to start the DynamoDB instance.
 >```bash
 >java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
 >```
-6. Run `aws configure` and enter fake credentials.
-7. Run this command to check if dynamodb is working. Make sure if port 8000 is available.
+5. Run `aws configure` and enter fake credentials.
+6. Run this command to check if DynamoDB is working. Make sure that port 8000 is available.
 >```bash
 >aws dynamodb create-table \
 >    --table-name DummyTable \
@@ -85,28 +84,28 @@ If java is not installed, you can download it from here https://www.java.com/en/
 >        ReadCapacityUnits=10,WriteCapacityUnits=5 \
 >    --endpoint-url http://localhost:8000
 >```
-8. Check if table is created or not.
+7. Check if table is created or not.
 >```bash
 >aws dynamodb wait table-exists --table-name DummyTable --endpoint-url http://localhost:8000
 >```
 
-If every things goes fine as per above step then you are ready to use dynamodb locally.
+If everything goes fine as per the above step then you are ready to use DynamoDB locally.
 
 <details>
-  <summary>More info to deploy dynamodb locally</summary>
+  <summary>More info on how to deploy DynamoDB locally</summary>
   <div>
-    If you stuck anywhere, you can visit this link https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html for more information.
+    If you are stuck anywhere, you can visit this link https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html for more information.
   </div>
 </details>
 
 ### DynamoDB-Admin
 
-If you want a GUI to manage your db like you do with AWS console, then you can use `dynamodb-admin`.
+It is always nice to have a GUI to interact with our database. For local DynamoDB setup, we can use `dynamodb-admin`.
 
-If you have nodejs in you system, as you should because we are going to use typescript for our examples, then you can use this command to install `dyanmodb-admin` globally.
+If you have nodejs in your system, as you should because we are going to use typescript for our examples, then you can use this command to install `dyanmodb-admin` globally.
 ```bash
 npm install -g dynamodb-admin
 ```
 
-Run command `dynamodb-admin` in terminal and then open `http://localhost:8001` in browser.
-Now you GUI is also available for managing dynamodb.
+Run the command `dynamodb-admin` in the terminal and then open `http://localhost:8001` in the browser.
+Now your GUI is also available for managing DynamoDB.

@@ -4,6 +4,8 @@ displayed_sidebar: dynamodb
 ---
 
 ## Create a table
+To create a table in DynamoDB, you can use this code.
+
 ```ts showLineNumbers
 import { CreateTableCommand, DynamoDBClient, TableClass } from "@aws-sdk/client-dynamodb";
 const endpoint = 'http://localhost:8000';
@@ -47,35 +49,22 @@ async function createMyTable() {
 createMyTable();
 ```
 
-To create our table we initializing `client` with the instance of class `DynamoDBClient` on **line 3**. This class is imported from from `@aws-sdk/client-dynamodb`. While calling the constructor of `DynamoDBClient` class we are passing enpoint url of our local DynamoDB instance. Next we creating `CreateTableCommand` command for creating `MyTable` inside `createMyTable` function.
+On **line 3**, we are initializing `client` with the instance of class `DynamoDBClient`. This class is imported from `@aws-sdk/client-dynamodb`. While calling the constructor of the `DynamoDBClient` class we are passing the endpoint URL of our local DynamoDB instance.
+Next, we are creating the `CreateTableCommand` command for creating `MyTable` inside the `createMyTable` function.
 
-To create a table `TableName`, `AttributeDefinitions` & `KeySchema` are required. Default value for `BillingMode` is `PROVISIONED` and with provisioned billing mode we need to specify `ProvisionedThroughput`. If we know how frequent our table is going to be accesed, then we can also specify `TableClass` also. By default table class is set to `STANDARD`.
+`TableName`, `AttributeDefinitions` & `KeySchema` are the required parameters required for creating a table. The default value for `BillingMode` is `PROVISIONED`. For the provisioned billing mode we need to specify `ProvisionedThroughput`. If we know how frequently our table is going to be accessed, then we can also specify `TableClass` also. By default table class is set to `STANDARD`.Now the only thing remaining is to call client.send to create our table which we are doing at **line 37**.
 
-After creating command, we are creating our table by call `client.send` method on **line 37**.
-
-Now lets see inputs of `CreateTableCommand` in detail.
-- **TableName:** This field used to give a to our table.
-- **AttributeDefinitions:** This field used to define the attributes of our table. As dynamodb is schemaless there we only need to specify those attribute which we are going to use as our primary key. Other attribute definitions are optional. It is an array of object where each object contains `AttributeName` and `AttributeType`.
-- **KeySchema:** This field used to define which attribues we are going to use in our primary key. It is an array with at least one element and at most two elements, depending on our primary key type. Every attribute in KeySchema should be present in AttributeDefinitions. `HASH` key type is used for **partition key** attribute and `RANGE` is used for **sort key** type.
-- **BillingMode**: This field is used to specify how we want to be billed for access our table. We can set these two billing modes. This field can be updated later.
-  * PROVISIONED: This mode should be used if we can predict how much traffice our table is going to get.
-  * PAY_PER_REQUEST: Also know as **On-demand mode**. This mode should be used if we can not predict how much traffice our table is going to get.
-- **ProvisionedThroughput:** This field is used when billing mode is provisioned. This field requires `ReadCapacityUnits` and `WriteCapacityUnits` to be specified.  More info on read/write capacity can be found [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html).
-- **TableClass:** This field is used to optimize the cost of our table. Based on how frequently our tables are going to be accessed, we can set either of these two classed.
+Here are the inputs parameters of `CreateTableCommand` in detail.
+- **TableName:** This field is used to give a to our table.
+- **AttributeDefinitions:** This field is used to define the attributes of our table. As DynamoDB is schemaless there we only need to specify only those attributes that we are going to use in our primary key. Other attribute definitions are optional. It is an array of objects where each object contains `AttributeName` and `AttributeType`.
+- **KeySchema:** This field is used to define those attributes we are going to use in our primary key. It is an array with at least one element and at most two elements, depending on our primary key type. Every attribute in KeySchema should be present in AttributeDefinitions. `HASH` key type is used for the **partition key** attribute and `RANGE` is used for the **sort key** type.
+- **BillingMode**: This field is used to specify how we want to be billed to access our table. We can set these two billing modes. This field can be updated later. These are the two modes which we can choose from.
+  * PROVISIONED: This mode should be used if we can predict how much traffic our table is going to get.
+  * PAY_PER_REQUEST: Also know as **On-demand mode**. This mode should be used if we can not predict how much traffic our table is going to get.
+- **ProvisionedThroughput:** This field is used when billing mode is provisioned. This field requires `ReadCapacityUnits` and `WriteCapacityUnits` to be specified. More info on read/write capacity can be found [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html).
+- **TableClass:** This field is used to optimize the cost of our table. Based on how frequently our tables are going to be accessed, we can set either of these two classes.
   * STANDARD: Should be used where data is accessed more frequently.
-  * STANDARD_INFREQUENT_ACCESS: Should be used data is accessed less frequently such as application logs, e-commerce order history etc.
-
-***
-
-## Global tables
-
-- single region tables
-- Table version
-- Global tables
-  - Must use on demand capacity or auto-scale provisioned capacity
-  - eventually consistent
-  - Last writer wins reconciliation
-  - Convert local table to global table
+  * STANDARD_INFREQUENT_ACCESS: Should be used data is accessed less frequently such as application logs, e-commerce order history, etc.
 
 ***
 ## Table operations
@@ -88,10 +77,10 @@ These are the basic operations we can perform on tables.
 - List all tables
 
 ### Create
-We have already covered how we can create a table.
+We have already seen above how we can create a table.
 
 ### Describe
-This operation is used to get details of a table. Have a look a this code.
+This operation is used to get details of a table. Have a look at this code.
 
 ```ts showLineNumbers
 async function describeMyTable() {
@@ -104,7 +93,7 @@ async function describeMyTable() {
 describeMyTable();
 ```
 
-In above code, `result` will contain a field `Table` that has all the information about our table such as:
+In the above code, `result` will contain a field `Table` that has all the information about our table such as:
 - TableStatus
 - TableName
 - TableArn
@@ -118,10 +107,10 @@ In above code, `result` will contain a field `Table` that has all the informatio
 ### Update
 
 To update a table we have to use `UpdateTableCommand`. We can make any of these changes with this command.
-- Change table's provisioned throughput (depends on table billing mode).
-- Change table's billing mode
-- Add, update or delete global secondary index.
-- Enable or disable streams on table.
+- Change the table's provisioned throughput (depends on table billing mode).
+- Change the table's billing mode
+- Add, update or delete the global secondary index.
+- Enable or disable streams on the table.
 
 ```ts showLineNumbers
 async function updateMyTable() {
@@ -141,11 +130,10 @@ async function updateMyTable() {
   console.log(result);
 }
 ```
-
-In above code `result` will be similar to describe table operation.
+In the above code `result` will be similar to `describe` table operation.
 
 ### Delete
-To delete a table we use `DeleteTableCommand`. Only table name is required to delete a table.
+To delete a table we use `DeleteTableCommand`. Only the table name is required to delete a table.
 
 ```ts showLineNumbers
 async function deleteMyTable() {
@@ -157,13 +145,13 @@ async function deleteMyTable() {
 }
 deleteMyTable();
 ```
-In above code `result` will be similar to describe table operation.
+In the above code `result` will be similar to `describe` table operation.
 
 ### List all tables
 
-To list all tables we use `ListTablesCommand`. We can pass any of these two optional paramter to this command.
-- **Limit:** If no limit is provided than 100 is the default limit.
-- **ExclusiveStartTableName:** When there are more tables than the limit, in that case we can provide a table name to start counting after that table name.
+To list all tables we use `ListTablesCommand`. We can pass any of these two optional parameters to this command.
+- **Limit:** If no limit is provided then 100 is the default limit.
+- **ExclusiveStartTableName:** When there are more tables than the limit, in that case, we can provide a table name to start counting after that table name.
 
 ```ts showLineNumbers
 async function listAllTables() {
@@ -176,14 +164,13 @@ async function listAllTables() {
 }
 listAllTables();
 ```
-In above code `result` will be contains all table name inside `TableNames` array. This result also containes one more important field `LastEvaluatedTableName`. This field should be used with `ExclusiveStartTableName` in `ListTablesCommand` to get list of all tables in case if we have more tables than the provided limit.
+In the above code `result` will contain all table names inside `TableNames` array. This result also contains one more important field `LastEvaluatedTableName`. This field should be used with `ExclusiveStartTableName` in `ListTablesCommand` to get the list of all tables in case we have more tables than the provided limit.
 
 ***
 
 ## Get provisioned capacity quota
 
-At the time of create our AWS account, we are given a quota fo maximum read/write capacity units.
-This quota is applicable across a single region for all dynamodb tables in that region. If you want to get that quota, you can use `DescribeLimitsCommand`.
+At the time of creating our AWS account, we are given a quota for maximum read/write capacity units. This quota is applicable across a single region for all DynamoDB tables in that region. If you want to get that quota, you can use `DescribeLimitsCommand`.
 
 ```ts showLineNumbers
 async function getProvisionedQuota() {
@@ -194,7 +181,7 @@ async function getProvisionedQuota() {
 getProvisionedQuota();
 ```
 
-In above code `result` will contain these important fields
+In the above code `result` will contain these important fields
 - AccountMaxReadCapacityUnits
 - AccountMaxWriteCapacityUnits
 - TableMaxReadCapacityUnits
