@@ -135,3 +135,8 @@ hr::before {
 .prism-code {
   border: var(--vin-prism-code-block-border);
 }
+
+.token-line {
+  line-height: 25px;
+  font-weight: 500;
+}
