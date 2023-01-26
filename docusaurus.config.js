@@ -1,7 +1,7 @@
 // @ts-check
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -10,7 +10,7 @@ const config = {
   url: 'https://vinittomar.github.io',
   baseUrl: '/tutorials/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'throw',
   favicon: 'favicon.png',
   organizationName: 'Vinit Tomar',
   projectName: 'Tutorials',

@@ -33,21 +33,24 @@
   --ifm-navbar-link-color: #fff;
   --ifm-font-weight-semibold: 16px;
   --ifm-navbar-link-hover-color: white;
+  --vin-prism-code-block-border: .5px solid #DBDBDB;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 html[data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #27ddb6;
+  --ifm-color-primary-dark: #20caa6;
+  --ifm-color-primary-darker: #1ebf9c;
+  --ifm-color-primary-darkest: #199d81;
+  --ifm-color-primary-light: #3de1be;
+  --ifm-color-primary-lighter: #49e2c1;
+  --ifm-color-primary-lightest: #6ae8cd;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 
   --ifm-navbar-background-color: #a10d49;
   --ifm-background-color: #303030;
+  --ifm-color-content: white;
+  --vin-prism-code-block-border: 0.5px solid rgb(68, 68, 68);
 }
 
 img[alt="folder-structure"] {
@@ -127,4 +130,8 @@ hr::before {
       color: white;
     }
   }
+}
+
+.prism-code {
+  border: var(--vin-prism-code-block-border);
 }
