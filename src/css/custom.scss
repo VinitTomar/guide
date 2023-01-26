@@ -1,0 +1,142 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+  font-family: Roboto,
+    Helvetica Neue Light,
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    Lucida Grande,
+    sans-serif;
+}
+
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --ifm-navbar-background-color: #d21982;
+  --ifm-navbar-link-color: #fff;
+  --ifm-font-weight-semibold: 16px;
+  --ifm-navbar-link-hover-color: white;
+  --vin-prism-code-block-border: .5px solid #DBDBDB;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+html[data-theme='dark'] {
+  --ifm-color-primary: #27ddb6;
+  --ifm-color-primary-dark: #20caa6;
+  --ifm-color-primary-darker: #1ebf9c;
+  --ifm-color-primary-darkest: #199d81;
+  --ifm-color-primary-light: #3de1be;
+  --ifm-color-primary-lighter: #49e2c1;
+  --ifm-color-primary-lightest: #6ae8cd;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --ifm-navbar-background-color: #a10d49;
+  --ifm-background-color: #303030;
+  --ifm-color-content: white;
+  --vin-prism-code-block-border: 0.5px solid rgb(68, 68, 68);
+}
+
+img[alt="folder-structure"] {
+  width: 350px;
+}
+
+img[alt="sample sam app"] {
+  background: white;
+  padding: 10px;
+  display: block;
+  margin: auto;
+}
+
+div.language-yaml span.token.plain,
+div.language-yaml span.token.plain+span.token.punctuation,
+div.language-yaml span.token.punctuation+span.token.punctuation {
+  color: rgb(255, 121, 198) !important;
+}
+
+hr {
+  margin-top: 52px;
+  margin-bottom: 42px;
+  height: 0;
+  display: block;
+  border: 0;
+  text-align: center;
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+hr::before {
+  content: '...';
+  display: inline-block;
+  margin-left: 0.6em;
+  position: relative;
+  top: -43px;
+  font-size: xx-large;
+  letter-spacing: 18px;
+}
+
+.token-line>span:first-child::before {
+  white-space: nowrap;
+}
+
+.navbar__link {
+  line-height: 33px;
+  font-weight: 400;
+  position: relative;
+
+  @mixin hoverAndActiveStyles {
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    content: " ";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 2px;
+    bottom: 2px;
+  }
+
+  &--active::after {
+    @include hoverAndActiveStyles();
+  }
+
+  &:hover::after {
+    @include hoverAndActiveStyles();
+  }
+}
+
+.navbar {
+  button.clean-btn {
+    :hover {
+      background-color: transparent !important;
+    }
+
+    svg {
+      color: white;
+    }
+  }
+}
+
+.prism-code {
+  border: var(--vin-prism-code-block-border);
+}
+
+.token-line {
+  line-height: 25px;
+  font-weight: 500;
+}
